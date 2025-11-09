@@ -97,33 +97,34 @@ public class PrefsActivity extends AppCompatActivity {
             setPreferencesFromResource(R.xml.prefs, rootKey);
             initSummary(getPreferenceScreen());
 
-            Preference importKeys = (Preference) findPreference("importKeys");
+            Preference importKeys = findPreference("importKeys");
+            if (importKeys != null) {
+                importKeys.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                    @Override
+                    public boolean onPreferenceClick(Preference preference) {
+                        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                        intent.addCategory(Intent.CATEGORY_OPENABLE);
+                        intent.setType("application/json");
+                        startActivityForResult(intent, IMPORT_REQUEST_CODE);
+                        return true;
+                    }
+                });
+            }
 
-            importKeys.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-                @Override
-                public boolean onPreferenceClick(Preference preference) {
-                    Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-                    intent.addCategory(Intent.CATEGORY_OPENABLE);
-                    intent.setType("application/json");
-                    startActivityForResult(intent, IMPORT_REQUEST_CODE);
-                    return true;
-                }
-            });
-
-            Preference exportKeys = (Preference) findPreference("exportKeys");
-
-            exportKeys.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-                @Override
-                public boolean onPreferenceClick(Preference preference) {
-                    Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
-                    intent.addCategory(Intent.CATEGORY_OPENABLE);
-                    intent.setType("application/json");
-                    intent.putExtra(Intent.EXTRA_TITLE, "kboard-keys.json");
-                    startActivityForResult(intent, EXPORT_REQUEST_CODE);
-                    return true;
-                }
-
-            });
+            Preference exportKeys = findPreference("exportKeys");
+            if (exportKeys != null) {
+                exportKeys.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                    @Override
+                    public boolean onPreferenceClick(Preference preference) {
+                        Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+                        intent.addCategory(Intent.CATEGORY_OPENABLE);
+                        intent.setType("application/json");
+                        intent.putExtra(Intent.EXTRA_TITLE, "kboard-keys.json");
+                        startActivityForResult(intent, EXPORT_REQUEST_CODE);
+                        return true;
+                    }
+                });
+            }
 
 
 
@@ -157,6 +158,9 @@ public class PrefsActivity extends AppCompatActivity {
         @Override
         public void onActivityResult(int requestCode, int resultCode, Intent data) {
             super.onActivityResult(requestCode, resultCode, data);
+            if (data == null) {
+                return;
+            }
             OutputStream outputStream = null;
             InputStream inputStream = null;
             if (requestCode == EXPORT_REQUEST_CODE) {
@@ -168,6 +172,9 @@ public class PrefsActivity extends AppCompatActivity {
                     // InputStream constructor takes File, String (path), or FileDescriptor
                     // data.getData() holds the URI of the path selected by the picker
                     Uri uri = data.getData();
+                    if (uri == null) {
+                        return;
+                    }
                     outputStream = requireActivity().getContentResolver().openOutputStream(uri);
                     outputStream.write(currentVals.getBytes());
                     outputStream.close();
@@ -244,7 +251,9 @@ public class PrefsActivity extends AppCompatActivity {
         @Override
         public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
             Preference pref = findPreference(key);
-            updatePrefSummary(pref);
+            if (pref != null) {
+                updatePrefSummary(pref);
+            }
         }
     }
 }
