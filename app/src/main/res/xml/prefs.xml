@@ -17,32 +17,26 @@
     <PreferenceCategory
         android:title="Options">
 
-        <org.xdty.preference.ColorPreference
+        <ListPreference
             android:key="bgcolor"
             android:title="Background Color"
-            app:dialogTitle="Background Color"
-            app:colors="@array/bg_colors"
-            app:columns="5"
-            app:material="true"
-            android:defaultValue="@color/md_teal500"/>
+            android:entries="@array/color_names"
+            android:entryValues="@array/color_values"
+            android:defaultValue="#ff009688"/>
 
-        <org.xdty.preference.ColorPreference
+        <ListPreference
             android:key="pressedcolor"
             android:title="Key Pressed Color"
-            app:dialogTitle="Key Pressed Color"
-            app:colors="@array/bg_colors"
-            app:columns="5"
-            app:material="true"
-            android:defaultValue="@color/md_teal200"/>
+            android:entries="@array/color_names"
+            android:entryValues="@array/color_values"
+            android:defaultValue="#ff80cbc4"/>
 
-        <org.xdty.preference.ColorPreference
+        <ListPreference
             android:key="textcolor"
             android:title="Text Color"
-            app:dialogTitle="Text Color"
-            app:colors="@array/text_colors"
-            app:columns="5"
-            app:material="true"
-            android:defaultValue="@color/md_black"/>
+            android:entries="@array/text_color_names"
+            android:entryValues="@array/text_color_values"
+            android:defaultValue="#ff000000"/>
 
         <SwitchPreferenceCompat
             android:key="textBold"
