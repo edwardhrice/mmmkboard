@@ -1,15 +1,7 @@
 package com.adgad.kboard;
 
-import android.app.Activity;
-import android.app.DialogFragment;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
-import androidx.annotation.NonNull;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.ItemTouchHelper;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -17,11 +9,20 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.DialogFragment;
+import androidx.preference.PreferenceManager;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
 
-public class CustomKeysActivity extends Activity implements AddWordDialogFragment.AddWordDialogListener {
+public class CustomKeysActivity extends AppCompatActivity implements AddWordDialogFragment.AddWordDialogListener {
 
 
     private final Gson gson = new Gson();
@@ -92,7 +93,7 @@ public class CustomKeysActivity extends Activity implements AddWordDialogFragmen
         args.putInt("index", index);
         args.putString("word", word);
         newFragment.setArguments(args);
-        newFragment.show(getFragmentManager(), "new_word");
+        newFragment.show(getSupportFragmentManager(), "new_word");
     }
 
 
@@ -129,15 +130,15 @@ public class CustomKeysActivity extends Activity implements AddWordDialogFragmen
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
-        switch (item.getItemId()) {
-            case R.id.reset:
-                adapter.clear();
-                adapter.addAll(KboardIME.Keys.getDefault());
-                Toast toast = Toast.makeText(this.getBaseContext(), "Reset keys to defaults!", Toast.LENGTH_SHORT);
-                toast.show();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+        int itemId = item.getItemId();
+        if (itemId == R.id.reset) {
+            adapter.clear();
+            adapter.addAll(KboardIME.Keys.getDefault());
+            Toast toast = Toast.makeText(this.getBaseContext(), "Reset keys to defaults!", Toast.LENGTH_SHORT);
+            toast.show();
+            return true;
+        } else {
+            return super.onOptionsItemSelected(item);
         }
     }
     @Override

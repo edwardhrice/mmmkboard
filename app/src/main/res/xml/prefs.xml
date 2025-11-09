@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <Preference android:title="Enable kboard" >
         <intent android:action="android.settings.INPUT_METHOD_SETTINGS"
@@ -20,31 +20,31 @@
         <org.xdty.preference.ColorPreference
             android:key="bgcolor"
             android:title="Background Color"
-            tools:dialogTitle="Background Color"
-            tools:colors="@array/bg_colors"
-            tools:columns="5"
-            tools:material="true"
+            app:dialogTitle="Background Color"
+            app:colors="@array/bg_colors"
+            app:columns="5"
+            app:material="true"
             android:defaultValue="@color/md_teal500"/>
 
         <org.xdty.preference.ColorPreference
             android:key="pressedcolor"
             android:title="Key Pressed Color"
-            tools:dialogTitle="Key Pressed Color"
-            tools:colors="@array/bg_colors"
-            tools:columns="5"
-            tools:material="true"
+            app:dialogTitle="Key Pressed Color"
+            app:colors="@array/bg_colors"
+            app:columns="5"
+            app:material="true"
             android:defaultValue="@color/md_teal200"/>
 
         <org.xdty.preference.ColorPreference
             android:key="textcolor"
             android:title="Text Color"
-            tools:dialogTitle="Text Color"
-            tools:colors="@array/text_colors"
-            tools:columns="5"
-            tools:material="true"
+            app:dialogTitle="Text Color"
+            app:colors="@array/text_colors"
+            app:columns="5"
+            app:material="true"
             android:defaultValue="@color/md_black"/>
 
-        <CheckBoxPreference
+        <SwitchPreferenceCompat
             android:key="textBold"
             android:title="Bold Keys"
             android:defaultValue="true"
@@ -60,35 +60,35 @@
             android:title="Font Size"
             android:entries="@array/fontsizes"
             android:entryValues="@array/fontsizes"/>
-        <CheckBoxPreference
+        <SwitchPreferenceCompat
             android:key="spacing"
             android:title="Key border"
             android:defaultValue="false"
             android:summary="Show border around keys."
             />
-        <CheckBoxPreference
+        <SwitchPreferenceCompat
             android:key="autospace"
             android:title="Auto-space words"
             android:defaultValue="true"
             android:summary="Add spaces between words if for some bizarre reason you need multiple words."
             />
-        <CheckBoxPreference
+        <SwitchPreferenceCompat
             android:key="autosend"
             android:title="Auto-send words"
             android:defaultValue="false"
             android:summary="Try and send automatically after each word (if the app supports it)."
             />
-        <CheckBoxPreference
+        <SwitchPreferenceCompat
             android:key="vibrate_on"
             android:title="Vibrate on Keypress"
             android:defaultValue="false"
             android:persistent="true" />
-        <CheckBoxPreference
+        <SwitchPreferenceCompat
             android:key="sound_on"
             android:title="Sound on Keypress"
             android:defaultValue="false"
             android:persistent="true" />
-        <CheckBoxPreference
+        <SwitchPreferenceCompat
             android:key="passive_aggressive"
             android:title="Passive Aggressive."
             android:summary="Automatically capitalize words and end with full stops."

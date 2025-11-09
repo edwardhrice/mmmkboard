@@ -4,16 +4,17 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.EditTextPreference;
-import android.preference.Preference;
-import android.preference.PreferenceActivity;
-import android.preference.PreferenceFragment;
-import android.preference.PreferenceGroup;
-import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.EditTextPreference;
+import androidx.preference.Preference;
+import androidx.preference.PreferenceFragmentCompat;
+import androidx.preference.PreferenceGroup;
+import androidx.preference.PreferenceManager;
 
 import com.google.gson.Gson;
 
@@ -31,47 +32,43 @@ import java.util.ArrayList;
  */
 
 
-public class PrefsActivity extends PreferenceActivity {
+public class PrefsActivity extends AppCompatActivity {
     /**
      * Adds intent extras so fragment opens
      */
 
-
-    @Override
-    protected boolean isValidFragment (String fragmentName) {
-        return SettingsFragment.class.getName().equals("com.adgad.kboard.PrefsActivity$SettingsFragment");
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_prefs);
 
-        getFragmentManager().beginTransaction()
-                .replace(android.R.id.content, new SettingsFragment())
-                .commit();
-
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.settings_container, new SettingsFragment())
+                    .commit();
+        }
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
-        switch (item.getItemId()) {
-            case R.id.reset:
-                final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this.getBaseContext());
-                pref.edit().clear().commit();
-                PreferenceManager.setDefaultValues(PrefsActivity.this, R.xml.prefs, true);
-                getFragmentManager().beginTransaction()
-                        .replace(android.R.id.content, new SettingsFragment())
-                        .commit();
-                Toast toast = Toast.makeText(this.getBaseContext(), "Reset to defaults!", Toast.LENGTH_SHORT);
-                toast.show();
-                return true;
-            case R.id.macro_help:
-                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/adgad/kboard/wiki"));
-                startActivity(browserIntent);
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+        int itemId = item.getItemId();
+        if (itemId == R.id.reset) {
+            final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this.getBaseContext());
+            pref.edit().clear().apply();
+            PreferenceManager.setDefaultValues(PrefsActivity.this, R.xml.prefs, true);
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.settings_container, new SettingsFragment())
+                    .commit();
+            Toast toast = Toast.makeText(this.getBaseContext(), "Reset to defaults!", Toast.LENGTH_SHORT);
+            toast.show();
+            return true;
+        } else if (itemId == R.id.macro_help) {
+            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/adgad/kboard/wiki"));
+            startActivity(browserIntent);
+            return true;
+        } else {
+            return super.onOptionsItemSelected(item);
         }
     }
 
@@ -83,7 +80,7 @@ public class PrefsActivity extends PreferenceActivity {
     }
 
 
-    public static class SettingsFragment extends PreferenceFragment
+    public static class SettingsFragment extends PreferenceFragmentCompat
         implements SharedPreferences.OnSharedPreferenceChangeListener {
 
         private final Gson gson = new Gson();
@@ -94,11 +91,10 @@ public class PrefsActivity extends PreferenceActivity {
 
 
         @Override
-        public void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            prefs = PreferenceManager.getDefaultSharedPreferences(this.getActivity());
+        public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
+            prefs = PreferenceManager.getDefaultSharedPreferences(requireActivity());
             // Load the preferences from an XML resource
-            addPreferencesFromResource(R.xml.prefs);
+            setPreferencesFromResource(R.xml.prefs, rootKey);
             initSummary(getPreferenceScreen());
 
             Preference importKeys = (Preference) findPreference("importKeys");
@@ -172,10 +168,10 @@ public class PrefsActivity extends PreferenceActivity {
                     // InputStream constructor takes File, String (path), or FileDescriptor
                     // data.getData() holds the URI of the path selected by the picker
                     Uri uri = data.getData();
-                    outputStream = this.getActivity().getContentResolver().openOutputStream(uri);
+                    outputStream = requireActivity().getContentResolver().openOutputStream(uri);
                     outputStream.write(currentVals.getBytes());
                     outputStream.close();
-                    Toast.makeText(this.getActivity(), "Exported keys to " + uri.getPath(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(requireActivity(), "Exported keys to " + uri.getPath(), Toast.LENGTH_LONG).show();
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 } catch (IOException e) {
@@ -189,13 +185,13 @@ public class PrefsActivity extends PreferenceActivity {
                 }
             } else if (requestCode == IMPORT_REQUEST_CODE) {
                 try {
-                    inputStream =  this.getActivity().getContentResolver().openInputStream(data.getData());
+                    inputStream = requireActivity().getContentResolver().openInputStream(data.getData());
                     String keys = isToString(inputStream);
                     ArrayList<String> keysAsJson = gson.fromJson(keys, ArrayList.class);
                     SharedPreferences.Editor editor = prefs.edit();
                     editor.putString(KboardIME.Keys.STORAGE_KEY, keys);
                     editor.apply();
-                    Toast toast = Toast.makeText(this.getActivity(), "Imported " + keysAsJson.size() + " keys!", Toast.LENGTH_SHORT);
+                    Toast toast = Toast.makeText(requireActivity(), "Imported " + keysAsJson.size() + " keys!", Toast.LENGTH_SHORT);
                     toast.show();
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
