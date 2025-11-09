@@ -5,8 +5,9 @@ import android.os.Build
 /**
  * Created by arjun on 19/12/18.
  */
-internal object ConvertUnicode {
+object ConvertUnicode {
 
+    @JvmStatic
     fun convert(src: String, type: String): String {
         val conversions = mapOf(
             "circle" to "⓪①②③④⑤⑥⑦⑧⑨ⓐⓑⓒⓓⓔⓕⓖⓗⓘⓙⓚⓛⓜⓝⓞⓟⓠⓡⓢⓣⓤⓥⓦⓧⓨⓩⒶⒷⒸⒹⒺⒻⒼⒽⒾⒿⓀⓁⓂⓃⓄⓅⓆⓇⓈⓉⓊⓋⓌⓍⓎⓏ",

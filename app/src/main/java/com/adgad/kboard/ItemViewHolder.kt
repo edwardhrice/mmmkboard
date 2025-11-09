@@ -9,6 +9,7 @@ class ItemViewHolder(
     private val clickListener: ItemClickListener
 ) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
 
+    @JvmField
     val textView: TextView = itemView as TextView
 
     init {
